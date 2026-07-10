@@ -68,6 +68,9 @@ Full step-by-step guides are **served by the device itself** at `http://<esp-ip>
 (UDP port 7091), ESPHome integration for HA, garage-door presence logic, PV surplus
 formula, and the Claude Desktop MCP snippet. A copy lives in [`docs/`](docs/).
 
+**Ready-made Loxone templates** (virtual UDP input + virtual output as importable XML):
+see [`loxone-templates/`](loxone-templates/).
+
 ### MCP server (optional, for AI assistants)
 
 ```bash

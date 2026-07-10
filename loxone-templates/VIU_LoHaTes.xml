@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LoHaTes - Virtueller UDP-Eingang (Status vom Tesla) -->
+<!-- Import: Loxone Config -> Virtuelle Eingaenge -> Vorlage / Geraetevorlage importieren -->
+<!-- Empfangsport 7091; Senderadresse optional auf die LoHaTes-IP setzen -->
+<VirtualInUdp Title="LoHaTes Tesla" Comment="Status vom LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="" Port="7091">
+  <VirtualInUdpCmd Title="Tesla SOC" Comment="-1 = unbekannt (Auto schlaeft)" Check="soc=\v" Analog="true" Signed="true" Unit="%" DefVal="0" MinVal="-1" MaxVal="100"/>
+  <VirtualInUdpCmd Title="Tesla Ladeleistung" Comment="" Check="pwr=\v" Analog="true" Signed="true" Unit="kW" DefVal="0" MinVal="-1" MaxVal="25"/>
+  <VirtualInUdpCmd Title="Tesla Ladestrom" Comment="Ist-Strom" Check="amps=\v" Analog="true" Signed="true" Unit="A" DefVal="0" MinVal="-1" MaxVal="48"/>
+  <VirtualInUdpCmd Title="Tesla Spannung" Comment="" Check="volt=\v" Analog="true" Signed="true" Unit="V" DefVal="0" MinVal="-1" MaxVal="500"/>
+  <VirtualInUdpCmd Title="Tesla Reichweite" Comment="" Check="range=\v" Analog="true" Signed="true" Unit="km" DefVal="0" MinVal="-1" MaxVal="1000"/>
+  <VirtualInUdpCmd Title="Tesla schlaeft" Comment="1 = schlaeft" Check="asleep=\v" Analog="false" Signed="false"/>
+  <VirtualInUdpCmd Title="Tesla angesteckt" Comment="1 = Ladekabel verbunden" Check="plugged=\v" Analog="false" Signed="false"/>
+  <VirtualInUdpCmd Title="Tesla laedt" Comment="1 = laedt gerade" Check="charging=\v" Analog="false" Signed="false"/>
+  <VirtualInUdpCmd Title="Tesla BLE-Signal" Comment="-50 gut ... -85 schwach" Check="rssi=\v" Analog="true" Signed="true" Unit="dBm" DefVal="0" MinVal="-100" MaxVal="0"/>
+  <VirtualInUdpCmd Title="Tesla anwesend" Comment="1 = in BLE-Reichweite (Garagentor-Logik)" Check="present=\v" Analog="false" Signed="false"/>
+</VirtualInUdp>
