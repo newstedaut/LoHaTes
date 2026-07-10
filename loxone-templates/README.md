@@ -26,5 +26,18 @@ Download the XML, open Loxone Config, select **Virtual inputs** → **Import tem
 → `VIU_LoHaTes.xml`; same for **Virtual outputs** with `VQ_LoHaTes.xml`. Then adjust the
 output address to your ESP's IP (`/dev/udp/<esp-ip>/7101`).
 
-> Getestet mit Loxone Config 15/16. Falls der Import bei deiner Version meckert,
+## Eingebaute Doku / Built-in docs
+
+Jeder Befehl und jeder Wert bringt seine Beschreibung mit: Das Feld **Beschreibung**
+(Comment) und der **Hinweis** (HintText) erklären direkt in Loxone Config, was die
+Funktion tut, welche Wertebereiche gelten und worauf zu achten ist (z. B. PV-Formel
+beim Ladestrom, Entprell-Empfehlung bei „Tesla anwesend", Warnung beim Entriegeln).
+Einfach das Objekt anklicken und in die Eigenschaften schauen.
+
+Every command/value ships with its documentation: the **Comment** and **HintText**
+fields explain ranges, use cases and caveats right inside Loxone Config.
+
+> Getestet mit Loxone Config 17. Falls der Import bei deiner Version meckert,
 > bitte ein Issue aufmachen — das XML-Schema ändert sich gelegentlich.
+> Vorlagen können laut Loxone auch in die offizielle [Loxone Library](https://library.loxone.com/)
+> hochgeladen werden ([Guideline](https://library.loxone.com/guideline)) — geplant.
