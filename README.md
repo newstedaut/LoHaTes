@@ -2,6 +2,8 @@
 
 # LoHaTes — Tesla ↔ Loxone & Home Assistant bridge
 
+**🇩🇪 [Deutsche Version](README.de.md)**
+
 [![Buy Me a Coffee](https://img.shields.io/badge/☕-Buy%20me%20a%20coffee-ffdd00)](https://buymeacoffee.com/bernhardsu9) [![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=HWBBHDSVD3MCC) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
 
 **One ESP32-S3 in your garage talks to your Tesla over Bluetooth — and to Loxone, Home Assistant and AI assistants. Entirely local, no cloud, no Tesla API fees.**
