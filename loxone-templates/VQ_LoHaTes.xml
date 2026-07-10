@@ -1,13 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- LoHaTes - Virtueller Ausgang (Befehle an den Tesla) -->
-<!-- Import: Loxone Config -> Virtuelle Ausgaenge -> Vorlage / Geraetevorlage importieren -->
-<!-- WICHTIG: Adresse auf die IP deines LoHaTes-ESP anpassen! -->
-<VirtualOut Title="LoHaTes Befehle" Comment="Befehle an den LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="/dev/udp/192.168.1.60/7101" CmdInit="" CloseAfterSend="true" CmdSep="">
-  <VirtualOutCmd Title="Tesla wecken" Comment="Impuls" CmdOn="wake" CmdOff="" Analog="false" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Laden Start/Stopp" Comment="EIN=Start AUS=Stopp" CmdOn="charge=1" CmdOff="charge=0" Analog="false" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Ladestrom setzen" Comment="1-16 A, z.B. PV-Ueberschuss" CmdOn="amps=&lt;v&gt;" CmdOff="" Analog="true" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Ladelimit setzen" Comment="50-100 %" CmdOn="limit=&lt;v&gt;" CmdOff="" Analog="true" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Tesla verriegeln" Comment="Impuls" CmdOn="lock" CmdOff="" Analog="false" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Tesla entriegeln" Comment="Nur mit Freigabe-Haken am ESP!" CmdOn="unlock" CmdOff="" Analog="false" Repeat="0" RepeatRate="0"/>
-  <VirtualOutCmd Title="Ladeport oeffnen" Comment="Impuls" CmdOn="port_open" CmdOff="" Analog="false" Repeat="0" RepeatRate="0"/>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VirtualOut Title="LoHaTes Befehle" Comment="Befehle an den LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="/dev/udp/192.168.1.60/7101" CmdInit="" CloseAfterSend="true" CmdSep=";">
+	<Info templateType="3" minVersion="13000726"/>
+	<VirtualOutCmd Title="Tesla wecken" Comment="Impuls" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="wake" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="false" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Laden Start/Stopp" Comment="EIN=Start, AUS=Stopp" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="charge=1" CmdOnHTTP="" CmdOnPost="" CmdOff="charge=0" CmdOffHTTP="" CmdOffPost="" Analog="false" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Ladestrom setzen" Comment="1-16 A, z.B. PV-Ueberschuss" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="amps=&lt;v&gt;" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="true" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Ladelimit setzen" Comment="50-100 %" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="limit=&lt;v&gt;" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="true" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Tesla verriegeln" Comment="Impuls" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="lock" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="false" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Tesla entriegeln" Comment="Nur mit Freigabe-Haken am ESP!" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="unlock" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="false" Repeat="0" RepeatRate="0"/>
+	<VirtualOutCmd Title="Ladeport oeffnen" Comment="Impuls" CmdOnMethod="GET" CmdOffMethod="GET" CmdOn="port_open" CmdOnHTTP="" CmdOnPost="" CmdOff="" CmdOffHTTP="" CmdOffPost="" Analog="false" Repeat="0" RepeatRate="0"/>
 </VirtualOut>
