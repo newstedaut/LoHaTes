@@ -80,6 +80,22 @@ Claude Desktop → `claude_desktop_config.json`:
     "command": "npx", "args": ["-y", "mcp-remote", "http://<pi-ip>:8809/mcp"] } } }
 ```
 
+## Changes vs. upstream (AGPL §5 notice)
+
+This repository contains a modified copy of
+[yoziru/esphome-tesla-ble](https://github.com/yoziru/esphome-tesla-ble)
+(in [`firmware/`](firmware/), original license preserved). Modifications and additions:
+
+- `firmware/packages/loxone.yml` — Loxone UDP interface (status push, presence events,
+  command receiver) and feature/permission switches
+- `firmware/components/loxone_docs/` — new component: bilingual setup dashboard
+  (`/loxone`, `/en`, `/geraete`, `/geraete-en`), permission checkboxes, `/logo.svg`
+- `firmware/packages/client.yml` — BLE connect/disconnect presence hooks
+- `firmware/packages/base.yml` — web server with auth + injected banner (`www/lohates.js`),
+  `api.reboot_timeout: 0s` (runs without Home Assistant)
+- `firmware/boards/esp32-s3.yml`, `tesla-ble-esp32-s3.yml` — ESP32-S3 N16R8 board config
+- `mcp/` — new: MCP server for AI assistants (not part of upstream)
+
 ## Credits
 
 - [yoziru/esphome-tesla-ble](https://github.com/yoziru/esphome-tesla-ble) — the Tesla BLE
