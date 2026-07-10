@@ -1,0 +1,127 @@
+# ---------------------------------------------------------------
+# TesLox: Loxone-UDP-Anbindung (laeuft komplett ohne HA und Cloud)
+# Status-Push alle 10 s an den Miniserver + Befehlsempfang
+# Port: 7091 (LD2450 nutzt bereits 7090)
+# ---------------------------------------------------------------
+substitutions:
+  loxone_ip: !secret loxone_ip
+  loxone_udp_port: "7091"
+
+globals:
+  - id: car_present
+    type: int
+    restore_value: no
+    initial_value: "0"
+
+# Doku-Seite am ESP: http://lohates.lan/loxone
+loxone_docs:
+
+# Feature-Schalter (Web-UI + HA, ueberleben Neustart)
+switch:
+  - platform: template
+    name: "Loxone Status-Push"
+    id: sw_lox_push
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:upload-network
+  - platform: template
+    name: "Loxone Befehle"
+    id: sw_lox_cmd
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:download-network
+  - platform: template
+    name: "KI Steuern erlaubt"
+    id: sw_ai_write
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:robot
+  # Freigaben je Befehl (wirken auf Loxone-UDP UND KI/MCP)
+  - platform: template
+    name: "Erlaubt wake"
+    id: sw_ok_wake
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:sleep-off
+  - platform: template
+    name: "Erlaubt charge"
+    id: sw_ok_charge
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:ev-station
+  - platform: template
+    name: "Erlaubt amps"
+    id: sw_ok_amps
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:current-ac
+  - platform: template
+    name: "Erlaubt limit"
+    id: sw_ok_limit
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:battery-charging-80
+  - platform: template
+    name: "Erlaubt lock"
+    id: sw_ok_lock
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:car-door-lock
+  - platform: template
+    name: "Erlaubt unlock"
+    id: sw_ok_unlock
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_OFF
+    entity_category: config
+    icon: mdi:car-door-lock-open
+  - platform: template
+    name: "Erlaubt port open"
+    id: sw_ok_port
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:ev-plug-tesla
+
+# Sichtbar im Web-UI und in HA
+binary_sensor:
+  - platform: template
+    name: "Tesla anwesend (BLE)"
+    id: tesla_present_sensor
+    device_class: presence
+    icon: mdi:car-connected
+    lambda: return id(car_present) == 1;
+
+udp:
+  id: udp_loxone
+  port: ${loxone_udp_port}
+  addresses:
+    - ${loxone_ip}
+  on_receive:
+    then:
+      - lambda: |-
+          if (!id(sw_lox_cmd).state) {
+            ESP_LOGW("lohates", "Loxone-Befehle deaktiviert (Schalter aus)");
+            return;
+          }
+          std::string cmd(data.begin(), data.end());
+          while (!cmd.empty() && (cmd.back()=='\n' || cmd.back()=='\r' || cmd.back()==' ')) cmd.pop_back();
+          ESP_LOGI("lohates", "Loxone-Befehl: %s", cmd.c_str());
+          auto *v = id(tesla_ble_vehicle_id);
+          auto deny = [&](const char *what) {
+            ESP_LOGW("lohates", "Befehl '%s' nicht freigegeben (Haken fehlt)", what);
+          };
+          if (cmd == "wake")                 { if (id(sw_ok_wake).state)   v->wake_vehicle();               else deny("wake"); }
+          else if (cmd == "charge=1")        { if (id(sw_ok_charge).state) v->set_charging_state(true);     else deny("charge"); }
+          else if (cmd == "charge=0")        { if (id(sw_ok_charge).state) v->set_charging_state(false);    else deny("charge"); }
+          else if (cmd.rfind("amps=",0)==0)  { if (id(sw_ok_amps).state)   v->set_charging_amps(atoi(cmd.c_str()+5));  else deny("amps"); }
+          else if (cmd.rfind("limit=",0)==0) { if (id(sw_ok_limit).state)  v->set_charging_limit(atoi(cmd.c_str()+6)); else deny("limit"); }
+          else if (cmd == "lock")            { if (id(sw_ok_lock).state)   v->lock_vehicle();               else deny("lock"); }
+          else if (cmd == "unlock")          { if (id(sw_ok_unlock).state) v->unlock_vehicle(); 

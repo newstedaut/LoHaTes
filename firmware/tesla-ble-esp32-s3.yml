@@ -1,0 +1,13 @@
+# Tesla BLE auf ESP32-S3 N16R8 (Bernhards Board, CH343-USB)
+# Flashen: esphome run tesla-ble-esp32-s3.yml --device COM14
+external_components: !include packages/external_components.yml
+
+substitutions:
+  friendly_name: LoHaTes
+  device_name: lohates
+
+packages:
+  base: !include packages/base.yml
+  device_base: !include boards/esp32-s3.yml
+  client: !include packages/client.yml
+  loxone: !include packages/loxone.yml

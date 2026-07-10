@@ -1,0 +1,8 @@
+{
+  "port": 8809,
+  "esp_host": "192.168.1.60",
+  "esp_port": 6053,
+  "api_encryption_key": "SAME AS api_encryption_key IN secrets.yaml",
+  "enable_write": true,
+  "enable_unlock": false
+}
