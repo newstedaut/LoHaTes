@@ -124,4 +124,44 @@ udp:
           else if (cmd.rfind("amps=",0)==0)  { if (id(sw_ok_amps).state)   v->set_charging_amps(atoi(cmd.c_str()+5));  else deny("amps"); }
           else if (cmd.rfind("limit=",0)==0) { if (id(sw_ok_limit).state)  v->set_charging_limit(atoi(cmd.c_str()+6)); else deny("limit"); }
           else if (cmd == "lock")            { if (id(sw_ok_lock).state)   v->lock_vehicle();               else deny("lock"); }
-          else if (cmd == "unlock")          { if (id(sw_ok_unlock).state) v->unlock_vehicle(); 
+          else if (cmd == "unlock")          { if (id(sw_ok_unlock).state) v->unlock_vehicle();             else deny("unlock"); }
+          else if (cmd == "port_open")       { if (id(sw_ok_port).state)   v->unlock_charge_port();         else deny("port_open"); }
+          else ESP_LOGW("lohates", "Unbekannter Befehl: %s", cmd.c_str());
+
+interval:
+  - interval: 10s
+    then:
+      - if:
+          condition:
+            switch.is_on: sw_lox_push
+          then:
+            - udp.write:
+                id: udp_loxone
+                data: !lambda |-
+                  auto *sm = id(tesla_ble_vehicle_id)->get_state_manager();
+                  auto fs = [&](const char *sid) {
+                    auto *s = sm->get_sensor(sid);
+                    return (s == nullptr || isnan(s->state)) ? -1.0f : s->state;
+                  };
+                  auto fb = [&](const char *sid) {
+                    auto *s = sm->get_binary_sensor(sid);
+                    return (s != nullptr && s->state) ? 1 : 0;
+                  };
+                  float soc   = fs("battery_level");
+                  float pwr   = fs("charger_power");
+                  float amps  = fs("charger_current");
+                  float volt  = fs("charger_voltage");
+                  float range = fs("range");
+                  if (range >= 0) range *= 1.609f;  // mi -> km
+                  int asleep  = fb("asleep");
+                  int plugged = fb("charger");
+                  auto *cs = sm->get_text_sensor("charging_state");
+                  int charging = (cs != nullptr && cs->state == "Charging") ? 1 : 0;
+                  float rssi = isnan(id(ble_rssi).state) ? 0.0f : id(ble_rssi).state;
+                  char buf[224];
+                  int len = snprintf(buf, sizeof(buf),
+                    "lohates:soc=%.0f;pwr=%.1f;amps=%.0f;volt=%.0f;range=%.0f;"
+                    "asleep=%d;plugged=%d;charging=%d;rssi=%.0f;present=%d\n",
+                    soc, pwr, amps, volt, range, asleep, plugged, charging, rssi,
+                    id(car_present));
+                  return std::vector<uint8_t>(buf, buf + len);
