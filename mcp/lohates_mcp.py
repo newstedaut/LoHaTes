@@ -252,7 +252,7 @@ def about() -> str:
         "projekt": "LoHaTes - Loxone + Home Assistant + Tesla Bridge",
         "esp": f"{HOST} (lohates.lan), ESP32-S3, Basis yoziru/esphome-tesla-ble",
         "web_ui": "http://lohates.lan/ und http://lohates.lan/loxone",
-        "loxone": "UDP Port 7091, Prefix 'lohates:'",
+        "loxone": "UDP Port 7101, Prefix 'lohates:'",
         "mcp": "dieser Server, Port 8809, auf dem HoxPi-Pi",
     }, ensure_ascii=False)
 

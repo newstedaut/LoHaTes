@@ -1,11 +1,11 @@
 # ---------------------------------------------------------------
 # TesLox: Loxone-UDP-Anbindung (laeuft komplett ohne HA und Cloud)
 # Status-Push alle 10 s an den Miniserver + Befehlsempfang
-# Port: 7091 (LD2450 nutzt bereits 7090)
+# Port: 7101 (LD2450 nutzt bereits 7090)
 # ---------------------------------------------------------------
 substitutions:
   loxone_ip: !secret loxone_ip
-  loxone_udp_port: "7091"
+  loxone_udp_port: "7101"
 
 globals:
   - id: car_present

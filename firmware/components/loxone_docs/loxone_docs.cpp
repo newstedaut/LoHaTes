@@ -72,9 +72,9 @@ footer{color:#9aa3af;font-size:.8rem;text-align:center;padding:1.6rem}
 <div class=note>Werte aktualisieren sich alle 10 s. &bdquo;-&ldquo; = Auto schl&auml;ft oder Wert noch unbekannt. Alle Entit&auml;ten und Buttons: <a href="/geraete">Ger&auml;te-UI</a>.</div>
 
 <div class=domain id=loxone><div class="dh lox"><h2>Loxone einrichten</h2></div><div class=dbody>
-<p>Kommunikation per <b>UDP, Port 7091</b>, in beide Richtungen. Miniserver: <code>192.168.1.10</code>, LoHaTes: <code>192.168.20.44</code> / <code>lohates.lan</code>. L&auml;uft komplett lokal &ndash; ohne Cloud, ohne Home Assistant.</p>
+<p>Kommunikation per <b>UDP, Port 7101</b>, in beide Richtungen. Miniserver: <code>192.168.1.10</code>, LoHaTes: <code>192.168.20.44</code> / <code>lohates.lan</code>. L&auml;uft komplett lokal &ndash; ohne Cloud, ohne Home Assistant.</p>
 <div class=sub>1 &middot; Virtueller UDP-Eingang (Status empfangen)</div>
-<p>Loxone Config &rarr; Virtuelle Eing&auml;nge &rarr; <b>Virtueller UDP-Eingang</b>: Empfangsport <code>7091</code>, Senderadresse <code>192.168.20.44</code>. LoHaTes sendet alle 10 s:</p>
+<p>Loxone Config &rarr; Virtuelle Eing&auml;nge &rarr; <b>Virtueller UDP-Eingang</b>: Empfangsport <code>7101</code>, Senderadresse <code>192.168.20.44</code>. LoHaTes sendet alle 10 s:</p>
 <pre>lohates:soc=72;pwr=7.4;amps=11;volt=232;range=310;asleep=0;plugged=1;charging=1;rssi=-67;present=1</pre>
 <p>Bei Ankunft/Wegfahrt zus&auml;tzlich <b>sofort</b>: <code>lohates:present=1</code> / <code>lohates:present=0</code>. Je Wert einen <b>UDP-Eingang-Befehl</b> anlegen:</p>
 <table><tr><th>Bezeichnung</th><th>Befehlserkennung</th><th>Typ/Einheit</th><th>Bemerkung</th></tr>
@@ -90,7 +90,7 @@ footer{color:#9aa3af;font-size:.8rem;text-align:center;padding:1.6rem}
 <tr><td><b>Tesla anwesend</b></td><td><code>present=\v</code></td><td>Digital</td><td>1 = in BLE-Reichweite</td></tr></table>
 <div class="note ok">Test: Loxone Config &rarr; UDP-Monitor &ouml;ffnen &rarr; alle 10 s kommt ein Paket.</div>
 <div class=sub>2 &middot; Virtueller Ausgang (Befehle senden)</div>
-<p>Virtuelle Ausg&auml;nge &rarr; <b>Virtueller Ausgang</b>, Adresse: <code>/dev/udp/192.168.20.44/7091</code></p>
+<p>Virtuelle Ausg&auml;nge &rarr; <b>Virtueller Ausgang</b>, Adresse: <code>/dev/udp/192.168.20.44/7101</code></p>
 <table><tr><th>Bezeichnung</th><th>Befehl bei EIN</th><th>Typ</th></tr>
 <tr><td>Tesla wecken</td><td><code>wake</code></td><td>Digital (Impuls)</td></tr>
 <tr><td>Laden Start / Stopp</td><td><code>charge=1</code> / <code>charge=0</code></td><td>Digital</td></tr>
@@ -333,9 +333,9 @@ footer{color:#9aa3af;font-size:.8rem;text-align:center;padding:1.6rem}
 <div class=note>Values refresh every 10 s. &ldquo;&ndash;&rdquo; = car asleep or value unknown yet. All entities and buttons: <a href="/geraete-en">Device UI</a>.</div>
 
 <div class=domain id=loxone><div class="dh lox"><h2>Loxone setup</h2></div><div class=dbody>
-<p>Communication via <b>UDP, port 7091</b>, both directions. Miniserver: <code>192.168.1.10</code>, LoHaTes: <code>192.168.20.44</code> / <code>lohates.lan</code>. Runs fully local &ndash; no cloud, no Home Assistant required.</p>
+<p>Communication via <b>UDP, port 7101</b>, both directions. Miniserver: <code>192.168.1.10</code>, LoHaTes: <code>192.168.20.44</code> / <code>lohates.lan</code>. Runs fully local &ndash; no cloud, no Home Assistant required.</p>
 <div class=sub>1 &middot; Virtual UDP input (receive status)</div>
-<p>Loxone Config &rarr; Virtual inputs &rarr; <b>Virtual UDP input</b>: receive port <code>7091</code>, sender address <code>192.168.20.44</code>. LoHaTes sends every 10 s:</p>
+<p>Loxone Config &rarr; Virtual inputs &rarr; <b>Virtual UDP input</b>: receive port <code>7101</code>, sender address <code>192.168.20.44</code>. LoHaTes sends every 10 s:</p>
 <pre>lohates:soc=72;pwr=7.4;amps=11;volt=232;range=310;asleep=0;plugged=1;charging=1;rssi=-67;present=1</pre>
 <p>On arrival/departure additionally <b>immediately</b>: <code>lohates:present=1</code> / <code>lohates:present=0</code>. Create one <b>UDP input command</b> per value:</p>
 <table><tr><th>Name</th><th>Command recognition</th><th>Type/unit</th><th>Note</th></tr>
@@ -351,7 +351,7 @@ footer{color:#9aa3af;font-size:.8rem;text-align:center;padding:1.6rem}
 <tr><td><b>Tesla present</b></td><td><code>present=\v</code></td><td>Digital</td><td>1 = in BLE range</td></tr></table>
 <div class="note ok">Test: Loxone Config &rarr; open the UDP monitor &rarr; a packet arrives every 10 s.</div>
 <div class=sub>2 &middot; Virtual output (send commands)</div>
-<p>Virtual outputs &rarr; <b>Virtual output</b>, address: <code>/dev/udp/192.168.20.44/7091</code></p>
+<p>Virtual outputs &rarr; <b>Virtual output</b>, address: <code>/dev/udp/192.168.20.44/7101</code></p>
 <table><tr><th>Name</th><th>Command on ON</th><th>Type</th></tr>
 <tr><td>Wake Tesla</td><td><code>wake</code></td><td>Digital (pulse)</td></tr>
 <tr><td>Charging start / stop</td><td><code>charge=1</code> / <code>charge=0</code></td><td>Digital</td></tr>

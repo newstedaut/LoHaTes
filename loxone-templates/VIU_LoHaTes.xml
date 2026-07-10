@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- LoHaTes - Virtueller UDP-Eingang (Status vom Tesla) -->
 <!-- Import: Loxone Config -> Virtuelle Eingaenge -> Vorlage / Geraetevorlage importieren -->
-<!-- Empfangsport 7091; Senderadresse optional auf die LoHaTes-IP setzen -->
-<VirtualInUdp Title="LoHaTes Tesla" Comment="Status vom LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="" Port="7091">
+<!-- Empfangsport 7101; Senderadresse optional auf die LoHaTes-IP setzen -->
+<VirtualInUdp Title="LoHaTes Tesla" Comment="Status vom LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="" Port="7101">
   <VirtualInUdpCmd Title="Tesla SOC" Comment="-1 = unbekannt (Auto schlaeft)" Check="soc=\v" Analog="true" Signed="true" Unit="%" DefVal="0" MinVal="-1" MaxVal="100"/>
   <VirtualInUdpCmd Title="Tesla Ladeleistung" Comment="" Check="pwr=\v" Analog="true" Signed="true" Unit="kW" DefVal="0" MinVal="-1" MaxVal="25"/>
   <VirtualInUdpCmd Title="Tesla Ladestrom" Comment="Ist-Strom" Check="amps=\v" Analog="true" Signed="true" Unit="A" DefVal="0" MinVal="-1" MaxVal="48"/>

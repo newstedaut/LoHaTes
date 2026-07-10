@@ -65,7 +65,7 @@ dashboard walks you through everything (DE/EN).
 
 Full step-by-step guides are **served by the device itself** at `http://<esp-ip>/loxone`
 (German) and `http://<esp-ip>/en` (English) — virtual input/output tables for Loxone
-(UDP port 7091), ESPHome integration for HA, garage-door presence logic, PV surplus
+(UDP port 7101), ESPHome integration for HA, garage-door presence logic, PV surplus
 formula, and the Claude Desktop MCP snippet. A copy lives in [`docs/`](docs/).
 
 **Ready-made Loxone templates** (virtual UDP input + virtual output as importable XML):
@@ -89,26 +89,4 @@ Claude Desktop → `claude_desktop_config.json`:
 
 This repository contains a modified copy of
 [yoziru/esphome-tesla-ble](https://github.com/yoziru/esphome-tesla-ble)
-(in [`firmware/`](firmware/), original license preserved). Modifications and additions:
-
-- `firmware/packages/loxone.yml` — Loxone UDP interface (status push, presence events,
-  command receiver) and feature/permission switches
-- `firmware/components/loxone_docs/` — new component: bilingual setup dashboard
-  (`/loxone`, `/en`, `/geraete`, `/geraete-en`), permission checkboxes, `/logo.svg`
-- `firmware/packages/client.yml` — BLE connect/disconnect presence hooks
-- `firmware/packages/base.yml` — web server with auth + injected banner (`www/lohates.js`),
-  `api.reboot_timeout: 0s` (runs without Home Assistant)
-- `firmware/boards/esp32-s3.yml`, `tesla-ble-esp32-s3.yml` — ESP32-S3 N16R8 board config
-- `mcp/` — new: MCP server for AI assistants (not part of upstream)
-
-## Credits
-
-- [yoziru/esphome-tesla-ble](https://github.com/yoziru/esphome-tesla-ble) — the Tesla BLE
-  protocol implementation this project builds on (AGPL-3.0)
-- [ESPHome](https://esphome.io) — firmware framework
-- Sibling project: [HoxPi](https://github.com/newstedaut/HoxPi) — same idea for
-  Hoval® heat pumps
-
-## License
-
-[AGPL-3.0](LICENSE) — same as the upstream project it derives from.
+(in [`firmware/`](firmware/), original license preserved). Modif

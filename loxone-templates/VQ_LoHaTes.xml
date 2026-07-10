@@ -2,7 +2,7 @@
 <!-- LoHaTes - Virtueller Ausgang (Befehle an den Tesla) -->
 <!-- Import: Loxone Config -> Virtuelle Ausgaenge -> Vorlage / Geraetevorlage importieren -->
 <!-- WICHTIG: Adresse auf die IP deines LoHaTes-ESP anpassen! -->
-<VirtualOut Title="LoHaTes Befehle" Comment="Befehle an den LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="/dev/udp/192.168.1.60/7091" CmdInit="" CloseAfterSend="true" CmdSep="">
+<VirtualOut Title="LoHaTes Befehle" Comment="Befehle an den LoHaTes ESP32 (github.com/newstedaut/LoHaTes)" Address="/dev/udp/192.168.1.60/7101" CmdInit="" CloseAfterSend="true" CmdSep="">
   <VirtualOutCmd Title="Tesla wecken" Comment="Impuls" CmdOn="wake" CmdOff="" Analog="false" Repeat="0" RepeatRate="0"/>
   <VirtualOutCmd Title="Laden Start/Stopp" Comment="EIN=Start AUS=Stopp" CmdOn="charge=1" CmdOff="charge=0" Analog="false" Repeat="0" RepeatRate="0"/>
   <VirtualOutCmd Title="Ladestrom setzen" Comment="1-16 A, z.B. PV-Ueberschuss" CmdOn="amps=&lt;v&gt;" CmdOff="" Analog="true" Repeat="0" RepeatRate="0"/>

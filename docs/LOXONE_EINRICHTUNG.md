@@ -1,6 +1,6 @@
 # LoHaTes in Loxone & Home Assistant einrichten
 
-Datenfluss: **Tesla ←BLE→ ESP (lohates.lan / 192.168.20.44) ←UDP:7091→ Miniserver (192.168.1.10)**
+Datenfluss: **Tesla ←BLE→ ESP (lohates.lan / 192.168.20.44) ←UDP:7101→ Miniserver (192.168.1.10)**
 Zusätzlich ESP →ESPHome-API→ Home Assistant. Alles lokal, keine Cloud.
 
 ---
@@ -12,7 +12,7 @@ Loxone Config → Miniserver → **Virtuelle Eingänge → Virtueller UDP-Eingan
 | Eigenschaft | Wert |
 |---|---|
 | Bezeichnung | LoHaTes |
-| UDP-Empfangsport | **7091** |
+| UDP-Empfangsport | **7101** |
 | Senderadresse | 192.168.20.44 (optional, filtert fremde Pakete) |
 
 Der ESP sendet alle 10 s eine Zeile:
@@ -48,7 +48,7 @@ Darunter je Wert einen **Virtuellen UDP-Eingang Befehl** anlegen:
 | Eigenschaft | Wert |
 |---|---|
 | Bezeichnung | LoHaTes Befehle |
-| Adresse | `/dev/udp/192.168.20.44/7091` |
+| Adresse | `/dev/udp/192.168.20.44/7101` |
 
 Darunter je Funktion einen **Virtuellen Ausgang Befehl**:
 
@@ -148,7 +148,7 @@ Von jedem PC im Netz (PowerShell):
 ```powershell
 $u = New-Object System.Net.Sockets.UdpClient
 $b = [Text.Encoding]::ASCII.GetBytes("wake")
-$u.Send($b, $b.Length, "192.168.20.44", 7091) | Out-Null; $u.Close()
+$u.Send($b, $b.Length, "192.168.20.44", 7101) | Out-Null; $u.Close()
 ```
 → Auto wacht auf (Beweis, dass VQ-Richtung stimmt). Eingangsrichtung: UDP-Monitor
 in Loxone Config öffnen und auf das 10-s-Paket warten.

@@ -67,7 +67,7 @@ das Dashboard führt durch alles (DE/EN).
 
 Die kompletten Schritt-für-Schritt-Anleitungen liefert **das Gerät selbst** unter
 `http://<esp-ip>/loxone` (deutsch) und `http://<esp-ip>/en` (englisch) — Tabellen für
-Virtuelle Ein-/Ausgänge (UDP-Port 7091), ESPHome-Integration für HA,
+Virtuelle Ein-/Ausgänge (UDP-Port 7101), ESPHome-Integration für HA,
 Garagentor-Anwesenheitslogik, PV-Überschuss-Formel und das Claude-Desktop-MCP-Snippet.
 Eine Kopie liegt in [`docs/`](docs/).
 
