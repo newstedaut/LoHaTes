@@ -37,6 +37,12 @@ LoHaTes (**Lo**xone + **H**ome **A**ssistant + **Tes**la, rhymes with Socrates) 
 - **AI interface (MCP)** — small [Model Context Protocol](https://modelcontextprotocol.io)
   server (runs on any Raspberry Pi / always-on box, port 8809): `get_status`, `diagnose`,
   `wake_vehicle`, `set_charging_amps` … Writing gated by config *and* the on-device checkboxes
+- **Presence zones (optional mmWave radar)** — attach an HLK-LD2450 and get **3 freely
+  drawable zones**. Stand in a zone for 3 s and LoHaTes reports it to Loxone
+  (`zone1/zone2/zone3`) — e.g. zone 1 opens the garage door, zone 2 switches on the light.
+  Zones are drawn with the mouse or a finger on a live top-down map at `http://<esp>/radar`
+- **Password you can actually reset** — change the web login on the device at
+  `http://<esp>/passwort`; recover with the BOOT button or by re-flashing (see below)
 
 ## Hardware
 
@@ -45,6 +51,7 @@ LoHaTes (**Lo**xone + **H**ome **A**ssistant + **Tes**la, rhymes with Socrates) 
 | ESP32-S3 (16 MB flash, 8 MB PSRAM) | e.g. N16R8 dev board; BLE + WiFi concurrently |
 | USB power supply | placed < 5 m from the car (garage/carport) |
 | optional: Raspberry Pi | for the MCP (AI) server — any always-on Linux box works |
+| optional: HLK-LD2450 | 24 GHz mmWave radar for presence zones (see below) |
 
 ## Install (firmware)
 
@@ -84,6 +91,36 @@ Claude Desktop → `claude_desktop_config.json`:
 { "mcpServers": { "lohates": {
     "command": "npx", "args": ["-y", "mcp-remote", "http://<pi-ip>:8809/mcp"] } } }
 ```
+
+## Optional: presence zones (mmWave radar)
+
+Attach an HLK-LD2450 radar and LoHaTes gains **three freely drawable presence zones** —
+stand in one for a few seconds and Loxone gets `zone1/zone2/zone3`. Handy for
+"walk up to the garage door and it opens", or switching on a light on approach.
+
+Entirely optional: without the radar package nothing changes, and the Radar page
+disappears from the navigation. Full guide: **[docs/radar.md](docs/radar.md)**.
+
+## Forgot the web password?
+
+**Factory setting: user `admin`, password `12345678`** — the same on every fresh build, so
+change it once the device is up.
+
+The web login can be changed on the device at `http://<esp>/passwort` and is stored in
+flash. Three ways back if it is lost — one of them always works:
+
+| Way | How |
+|---|---|
+| Still logged in | Button *"reset to default"* on `/passwort` |
+| Physical access | **Hold the BOOT button for 10 s** → the default from `secrets.yaml` applies again |
+| Re-flash | Change `web_password` in `secrets.yaml` and flash — any custom password is discarded automatically |
+
+That last rule is deliberate: a custom password lives in NVS and would otherwise survive a
+re-flash and lock you out for good. LoHaTes stores a hash of the default alongside it, so a
+changed default always wins.
+
+The **OTA password** used for flashing is separate and also lives in `secrets.yaml`
+(`ota_password`).
 
 ## Changes vs. upstream (AGPL §5 notice)
 

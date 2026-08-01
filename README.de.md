@@ -39,6 +39,12 @@ inspizieren und (falls erlaubt) steuern können.
   (läuft auf jedem Raspberry Pi / Always-on-Rechner, Port 8809): `get_status`, `diagnose`,
   `wake_vehicle`, `set_charging_amps` … Schreiben doppelt abgesichert über Config *und*
   die Haken am Gerät
+- **Anwesenheits-Zonen (optional, mmWave-Radar)** — mit einem HLK-LD2450 bekommst du
+  **3 frei aufziehbare Zonen**. Wer 3 s in einer Zone steht, wird an Loxone gemeldet
+  (`zone1/zone2/zone3`) — z. B. Zone 1 öffnet das Garagentor, Zone 2 schaltet das Licht ein.
+  Gezeichnet werden die Zonen mit Maus oder Finger auf einer Live-Karte unter `http://<esp>/radar`
+- **Passwort, das man zurücksetzen kann** — Web-Login direkt am Gerät unter
+  `http://<esp>/passwort` ändern; Notausgang über BOOT-Taster oder Neuflashen (siehe unten)
 
 ## Hardware
 
@@ -47,6 +53,7 @@ inspizieren und (falls erlaubt) steuern können.
 | ESP32-S3 (16 MB Flash, 8 MB PSRAM) | z. B. N16R8-Dev-Board; BLE + WLAN gleichzeitig |
 | USB-Netzteil | Standort < 5 m zum Auto (Garage/Carport) |
 | optional: Raspberry Pi | für den MCP-(KI-)Server — jeder Always-on-Linux-Rechner geht |
+| optional: HLK-LD2450 | 24-GHz-mmWave-Radar für Anwesenheits-Zonen (siehe unten) |
 
 ## Installation (Firmware)
 
@@ -84,6 +91,36 @@ Claude Desktop → `claude_desktop_config.json`:
 { "mcpServers": { "lohates": {
     "command": "npx", "args": ["-y", "mcp-remote", "http://<pi-ip>:8809/mcp"] } } }
 ```
+
+## Optional: Anwesenheits-Zonen (mmWave-Radar)
+
+Mit einem HLK-LD2450 bekommt LoHaTes **drei frei aufziehbare Zonen** — wer ein paar
+Sekunden in einer steht, wird an Loxone gemeldet (`zone1/zone2/zone3`). Gedacht für
+„vors Garagentor stellen und es geht auf" oder Licht bei Annäherung.
+
+Komplett optional: ohne das Radar-Paket ändert sich nichts, und der Radar-Punkt
+verschwindet aus der Navigation. Ausführlich: **[docs/radar.md](docs/radar.md)**.
+
+## Web-Passwort vergessen?
+
+**Werkseinstellung: Benutzer `admin`, Passwort `12345678`** — bei jedem frisch gebauten Gerät
+gleich, also nach der Inbetriebnahme einmal ändern.
+
+Das Login-Passwort lässt sich am Gerät unter `http://<esp>/passwort` ändern und liegt im
+Flash. Drei Wege zurück, falls es weg ist — einer geht immer:
+
+| Weg | Wie |
+|---|---|
+| Noch eingeloggt | Knopf *„Auf Standard zurücksetzen"* auf `/passwort` |
+| Zugriff aufs Gerät | **BOOT-Taster 10 Sekunden halten** → Standard aus `secrets.yaml` gilt wieder |
+| Neu flashen | `web_password` in `secrets.yaml` ändern und flashen — ein selbst gesetztes Passwort wird dabei automatisch verworfen |
+
+Der letzte Punkt ist Absicht: Ein eigenes Passwort liegt im NVS und würde ein Neuflashen
+sonst überleben und dich dauerhaft aussperren. LoHaTes speichert deshalb einen Hash des
+Standard-Passworts mit — ändert sich der Standard, gewinnt er.
+
+Das **OTA-Passwort** zum Flashen ist ein anderes und steht ebenfalls in `secrets.yaml`
+(`ota_password`).
 
 ## Änderungen gegenüber dem Original (AGPL-§5-Hinweis)
 

@@ -1,0 +1,228 @@
+# ---------------------------------------------------------------
+# LoHaTes: HLK-LD2450 mmWave-Radar mit 3 frei definierbaren Zonen
+# Verdrahtung: LD2450 TX -> ESP GPIO18 (RX) | LD2450 RX -> ESP GPIO17 (TX)
+#              LD2450 5V -> 5V | GND -> GND
+#
+# Jede Zone ist ein Rechteck (X1/Y1/X2/Y2 in mm), das per Weboberflaeche
+# http://<esp>/radar aufgezeichnet wird - kein Neuflashen noetig.
+# Steht jemand lange genug in einer Zone, geht das an Loxone:
+#     lohates:zone1=1;zone2=0;zone3=0
+# Damit kann in Loxone jede Zone etwas anderes ausloesen
+# (z. B. Zone 1 = Garagentor auf, Zone 2 = Licht an, Zone 3 = frei).
+#
+# WICHTIG: Der Zonen-Modus muss auf "Detection" stehen, sonst zaehlt
+# das Modul keine Ziele in den Zonen (Knopf dafuer ist auf /radar).
+# ---------------------------------------------------------------
+substitutions:
+  # So lange muss jemand in der Zone stehen, bevor gemeldet wird
+  radar_hold_time: "3s"
+
+uart:
+  - id: uart_ld2450
+    tx_pin: GPIO17
+    rx_pin: GPIO18
+    baud_rate: 256000
+    parity: NONE
+    stop_bits: 1
+
+ld2450:
+  id: ld2450_radar
+  uart_id: uart_ld2450
+
+# Blendet den Navigationspunkt "Radar" auf den Doku-Seiten ein.
+# Ohne dieses Paket bleibt die Navigation ohne Radar-Eintrag.
+loxone_docs:
+  show_radar: true
+
+globals:
+  - id: zone1_occupied
+    type: int
+    restore_value: no
+    initial_value: "0"
+  - id: zone2_occupied
+    type: int
+    restore_value: no
+    initial_value: "0"
+  - id: zone3_occupied
+    type: int
+    restore_value: no
+    initial_value: "0"
+
+script:
+  # Zonenstatus an Loxone schicken, 3x als UDP-Verlust-Versicherung
+  - id: push_zones
+    mode: restart
+    then:
+      - repeat:
+          count: 3
+          then:
+            - lambda: |-
+                if (!id(sw_lox_push).state || !id(sw_radar_push).state) return;
+                char buf[72];
+                int len = snprintf(buf, sizeof(buf), "lohates:zone1=%d;zone2=%d;zone3=%d\n",
+                                   id(zone1_occupied), id(zone2_occupied), id(zone3_occupied));
+                id(udp_loxone).send_packet(std::vector<uint8_t>(buf, buf + len));
+            - delay: 400ms
+
+switch:
+  # Radar-Meldung an Loxone abschaltbar (wie die anderen Freigaben)
+  - platform: template
+    name: "Radar Zone-Push"
+    id: sw_radar_push
+    optimistic: true
+    restore_mode: RESTORE_DEFAULT_ON
+    entity_category: config
+    icon: mdi:radar
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    bluetooth:
+      name: "Radar Bluetooth"
+      entity_category: config
+    multi_target:
+      name: "Radar Multi-Target"
+      entity_category: config
+
+select:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    zone_type:
+      name: "Radar Zonen-Modus"
+      entity_category: config
+
+number:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    presence_timeout:
+      name: "Radar Praesenz-Timeout"
+      entity_category: config
+    # X = seitlich (- links / + rechts), Y = Abstand vom Sensor, alles in mm
+    zone_1:
+      x1: {name: "Zone 1 X1", entity_category: config}
+      y1: {name: "Zone 1 Y1", entity_category: config}
+      x2: {name: "Zone 1 X2", entity_category: config}
+      y2: {name: "Zone 1 Y2", entity_category: config}
+    zone_2:
+      x1: {name: "Zone 2 X1", entity_category: config}
+      y1: {name: "Zone 2 Y1", entity_category: config}
+      x2: {name: "Zone 2 X2", entity_category: config}
+      y2: {name: "Zone 2 Y2", entity_category: config}
+    zone_3:
+      x1: {name: "Zone 3 X1", entity_category: config}
+      y1: {name: "Zone 3 Y1", entity_category: config}
+      x2: {name: "Zone 3 X2", entity_category: config}
+      y2: {name: "Zone 3 Y2", entity_category: config}
+
+sensor:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    target_count:
+      name: "Radar Ziele gesamt"
+      id: radar_target_count
+    zone_1:
+      target_count:
+        name: "Radar Zone 1 Ziele"
+        id: radar_zone1_count
+    zone_2:
+      target_count:
+        name: "Radar Zone 2 Ziele"
+        id: radar_zone2_count
+    zone_3:
+      target_count:
+        name: "Radar Zone 3 Ziele"
+        id: radar_zone3_count
+    target_1:
+      x: {name: "Radar Ziel 1 X", id: radar_t1_x}
+      y: {name: "Radar Ziel 1 Y", id: radar_t1_y}
+      distance: {name: "Radar Ziel 1 Abstand", id: radar_t1_dist}
+    target_2:
+      x: {name: "Radar Ziel 2 X", id: radar_t2_x}
+      y: {name: "Radar Ziel 2 Y", id: radar_t2_y}
+    target_3:
+      x: {name: "Radar Ziel 3 X", id: radar_t3_x}
+      y: {name: "Radar Ziel 3 Y", id: radar_t3_y}
+
+binary_sensor:
+  - platform: ld2450
+    ld2450_id: ld2450_radar
+    has_target:
+      name: "Radar: Person erkannt"
+      id: radar_has_target
+  # Je Zone: steht jemand lange genug drin?
+  - platform: template
+    name: "Radar: Zone 1 besetzt"
+    id: radar_zone1_hold
+    device_class: occupancy
+    icon: mdi:human-greeting-proximity
+    lambda: |-
+      if (isnan(id(radar_zone1_count).state)) return false;
+      return id(radar_zone1_count).state >= 1;
+    filters:
+      - delayed_on: ${radar_hold_time}
+      - delayed_off: 2s
+    on_press:
+      - lambda: 'id(zone1_occupied) = 1;'
+      - script.execute: push_zones
+    on_release:
+      - lambda: 'id(zone1_occupied) = 0;'
+      - script.execute: push_zones
+  - platform: template
+    name: "Radar: Zone 2 besetzt"
+    id: radar_zone2_hold
+    device_class: occupancy
+    icon: mdi:human-greeting-proximity
+    lambda: |-
+      if (isnan(id(radar_zone2_count).state)) return false;
+      return id(radar_zone2_count).state >= 1;
+    filters:
+      - delayed_on: ${radar_hold_time}
+      - delayed_off: 2s
+    on_press:
+      - lambda: 'id(zone2_occupied) = 1;'
+      - script.execute: push_zones
+    on_release:
+      - lambda: 'id(zone2_occupied) = 0;'
+      - script.execute: push_zones
+  - platform: template
+    name: "Radar: Zone 3 besetzt"
+    id: radar_zone3_hold
+    device_class: occupancy
+    icon: mdi:human-greeting-proximity
+    lambda: |-
+      if (isnan(id(radar_zone3_count).state)) return false;
+      return id(radar_zone3_count).state >= 1;
+    filters:
+      - delayed_on: ${radar_hold_time}
+      - delayed_off: 2s
+    on_press:
+      - lambda: 'id(zone3_occupied) = 1;'
+      - script.execute: push_zones
+    on_release:
+      - lambda: 'id(zone3_occupied) = 0;'
+      - script.execute: push_zones
+
+  # BOOT-Taster (GPIO0) 10 s halten -> Web-Passwort auf Standard zuruecksetzen
+  - platform: gpio
+    id: boot_button
+    internal: true
+    pin:
+      number: GPIO0
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+    on_click:
+      min_length: 10s
+      max_length: 60s
+      then:
+        - lambda: 'id(lohates_docs)->reset_password();'
+
+# Selbstheilung: Zonenstatus zyklisch nachschieben
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          if (!id(sw_lox_push).state || !id(sw_radar_push).state) return;
+          char buf[72];
+          int len = snprintf(buf, sizeof(buf), "lohates:zone1=%d;zone2=%d;zone3=%d\n",
+                             id(zone1_occupied), id(zone2_occupied), id(zone3_occupied));
+          id(udp_loxone).send_packet(std::vector<uint8_t>(buf, buf + len));

@@ -13,8 +13,12 @@ globals:
     restore_value: no
     initial_value: "0"
 
-# Doku-Seite am ESP: http://lohates.lan/loxone
+# Doku-Seiten am ESP: /loxone /en /geraete /radar /passwort
+# default_password = Rueckfall-Passwort, wenn das selbst gesetzte
+# zurueckgesetzt wird (BOOT-Taster 10 s oder Knopf auf /passwort)
 loxone_docs:
+  id: lohates_docs
+  default_password: !secret web_password
 
 # Feature-Schalter (Web-UI + HA, ueberleben Neustart)
 switch:
@@ -126,6 +130,7 @@ udp:
           else if (cmd == "lock")            { if (id(sw_ok_lock).state)   v->lock_vehicle();               else deny("lock"); }
           else if (cmd == "unlock")          { if (id(sw_ok_unlock).state) v->unlock_vehicle();             else deny("unlock"); }
           else if (cmd == "port_open")       { if (id(sw_ok_port).state)   v->unlock_charge_port();         else deny("port_open"); }
+          else if (cmd == "port_close")      { if (id(sw_ok_port).state)   v->close_charge_port();          else deny("port_close"); }
           else ESP_LOGW("lohates", "Unbekannter Befehl: %s", cmd.c_str());
 
 interval:

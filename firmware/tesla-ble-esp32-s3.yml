@@ -1,4 +1,4 @@
-# Tesla BLE auf ESP32-S3 N16R8 (Bernhards Board, CH343-USB)
+# Tesla BLE auf ESP32-S3 N16R8 (16 MB Flash / 8 MB PSRAM, CH343-USB)
 # Flashen: esphome run tesla-ble-esp32-s3.yml --device COM14
 external_components: !include packages/external_components.yml
 
@@ -11,3 +11,4 @@ packages:
   device_base: !include boards/esp32-s3.yml
   client: !include packages/client.yml
   loxone: !include packages/loxone.yml
+  radar: !include packages/radar.yml
